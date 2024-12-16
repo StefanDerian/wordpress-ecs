@@ -16,10 +16,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN chmod +x wp-cli.phar
 
-RUN whoami
-RUN su -l www-data -s /bin/bash
-RUN whoami
-
 RUN mv wp-cli.phar /usr/local/bin/wp
 # Copy source code to /var/www/html
 WORKDIR /var/www/html/wordpress
