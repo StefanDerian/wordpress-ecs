@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8081:80" # Exposes port 8080 on the host machine, mapped to port 80 inside the container
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf # Nginx configuration file
+      - ./:/var/www/html # Your application files
+    depends_on:
+      - php-fpm
+    networks:
+      - app-network
+  php-fpm:
+    container_name: wordpress-app
+    build:
+      context: ./
+      dockerfile: ./docker/php-fpm/Dockerfile
+    volumes:
+      - ./:/var/www/html # Mount your application files
+#      - ./php.ini:/usr/local/etc/php/php.ini:ro # Custom PHP configuration
+    depends_on:
+      - mariadb
+    networks:
+      - app-network
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    networks:
+      - app-network
+  mariadb:
+    build:
+      context: ./
+      dockerfile: ./docker/mariadb/Dockerfile
+    ports:
+      - 3306:3306
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

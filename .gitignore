@@ -1,0 +1,8 @@
+/vendor/
+/wordpress/.env
+/wordpress/vendor/
+/wordpress/wp-content/plugins/
+/wordpress/wp-content/themes/**/*
+/wordpress/wp-admin/
+/wordpress/wp-includes/
+.idea/
