@@ -6,3 +6,5 @@
 /wordpress/wp-admin/
 /wordpress/wp-includes/
 .idea/
+/terraform/.terraform/
+/terraform/.terraform.lock.hcl
