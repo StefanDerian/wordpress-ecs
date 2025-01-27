@@ -38,7 +38,8 @@ jobs:
           chmod +x wp-cli.phar
           sudo mv wp-cli.phar /usr/local/bin/wp
           wp core download --path=/tmp/wordpress
+          composer require --dev phpunit/phpunit
 
       - name: Run PHP Unit Tests
         run: |
-          vendor/bin/phpunit
+          ./vendor/bin/phpunit
