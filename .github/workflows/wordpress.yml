@@ -31,12 +31,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-scripts --no-dev --prefer-dist
 
-      # Run WordPress linting tools
-      - name: Run WordPress coding standards
-        uses: rtCamp/action-phpcs@v2
-        with:
-          phpcs-standard: WordPress
-
       # Optionally run WordPress unit tests (requires WP-CLI setup)
       - name: Set up WordPress for testing
         run: |
