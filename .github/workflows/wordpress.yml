@@ -33,7 +33,7 @@ jobs:
 
       # Run WordPress linting tools
       - name: Run WordPress coding standards
-        uses: wearerequired/phpcs-action@v2
+        uses: rtCamp/action-phpcs@v2
         with:
           phpcs-standard: WordPress
 
