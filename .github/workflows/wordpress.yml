@@ -1,12 +1,5 @@
 name: WordPress CI Pipeline
-
 on:
-  push:
-    branches:
-      - feature/**
-  pull_request:
-    branches:
-      - feature/**
   workflow_dispatch:
     inputs:
       environment:
