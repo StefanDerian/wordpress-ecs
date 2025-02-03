@@ -54,15 +54,14 @@ jobs:
           ./vendor/bin/phpunit
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.environment || 'prd' }}  # Default to dev
+    environment: ${{ github.event.inputs.environment || 'dev' }}  # Default to dev
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.2'
           tools: composer
 
       - name: Install Dependencies
