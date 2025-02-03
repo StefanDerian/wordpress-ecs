@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - feature/**
+      - main
   pull_request:
     branches:
       - feature/**
@@ -16,7 +17,7 @@ on:
         options:
           - dev
           - uat
-          - sys
+          - prd
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
@@ -71,11 +72,11 @@ jobs:
       - name: Determine Deployment Environment
         id: set_env
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/feature/"* ]]; then
+          if [[ "${{ github.event.inputs.environment }}" == "dev" ]]; then
             echo "environment=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/main"* ]]; then
+          elif [[ "${{ github.event.inputs.environment }}" == "uat" ]]; then
             echo "environment=prd" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/staging"* ]]; then
+          elif [[ "${{ github.event.inputs.environment }}" == "prd" ]]; then
             echo "environment=uat" >> $GITHUB_ENV
           fi
 
@@ -87,8 +88,8 @@ jobs:
           elif [ "${{ env.environment }}" == "uat" ]; then
             echo "Deploying to UAT"
             # Add deployment commands for UAT
-          elif [ "${{ env.environment }}" == "sys" ]; then
-            echo "Deploying to SYS"
+          elif [ "${{ env.environment }}" == "prd" ]; then
+            echo "Deploying to PRD"
             # Add deployment commands for SYS
           else
             echo "Invalid environment!"
