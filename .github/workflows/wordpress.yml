@@ -7,6 +7,17 @@ on:
   pull_request:
     branches:
       - feature/**
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment to deploy (dev, uat, sys)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+          - sys
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
