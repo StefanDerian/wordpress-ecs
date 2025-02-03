@@ -36,5 +36,8 @@
             "wordpress/wp-content/plugins/{$name}/": ["type:wordpress-plugin"],
             "wordpress/wp-content/themes/{$name}/": ["type:wordpress-theme"]
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
     }
 }

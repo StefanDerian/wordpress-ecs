@@ -1,0 +1,91 @@
+name: WordPress CI Pipeline
+on:
+  push:
+    branches:
+      - feature/**
+  pull_request:
+    branches:
+      - feature/**
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Select environment to deploy (dev, uat, sys)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - uat
+          - sys
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up PHP with required extensions
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Specify the PHP version
+          extensions: mbstring, intl, pdo, pdo_mysql, curl, json, xml
+          ini-values: post_max_size=256M, upload_max_filesize=256M
+          tools: composer
+
+      # Install Composer dependencies
+      - name: Install Composer dependencies
+        run: composer install --no-scripts --no-dev --prefer-dist
+
+      # Optionally run WordPress unit tests (requires WP-CLI setup)
+      - name: Set up WordPress for testing
+        run: |
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+          wp core download --path=/tmp/wordpress
+          composer require --dev phpunit/phpunit
+
+      - name: Run PHP Unit Tests
+        run: |
+          ./vendor/bin/phpunit
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}  # Default to dev
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Determine Deployment Environment
+        id: set_env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/feature/"* ]]; then
+            echo "environment=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy to ${{ env.environment }}
+        run: |
+          if [ "${{ env.environment }}" == "dev" ]; then
+            echo "Deploying to DEV"
+            # Add deployment commands for DEV (e.g., AWS, SSH, etc.)
+          elif [ "${{ env.environment }}" == "uat" ]; then
+            echo "Deploying to UAT"
+            # Add deployment commands for UAT
+          elif [ "${{ env.environment }}" == "sys" ]; then
+            echo "Deploying to SYS"
+            # Add deployment commands for SYS
+          else
+            echo "Invalid environment!"
+            exit 1
+          fi
