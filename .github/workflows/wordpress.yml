@@ -22,7 +22,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       # Checkout the repository
       - name: Checkout code
@@ -53,3 +52,41 @@ jobs:
       - name: Run PHP Unit Tests
         run: |
           ./vendor/bin/phpunit
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}  # Default to dev
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Determine Deployment Environment
+        id: set_env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/feature/"* ]]; then
+            echo "environment=dev" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy to ${{ env.environment }}
+        run: |
+          if [ "${{ env.environment }}" == "dev" ]; then
+            echo "Deploying to DEV"
+            # Add deployment commands for DEV (e.g., AWS, SSH, etc.)
+          elif [ "${{ env.environment }}" == "uat" ]; then
+            echo "Deploying to UAT"
+            # Add deployment commands for UAT
+          elif [ "${{ env.environment }}" == "sys" ]; then
+            echo "Deploying to SYS"
+            # Add deployment commands for SYS
+          else
+            echo "Invalid environment!"
+            exit 1
+          fi
