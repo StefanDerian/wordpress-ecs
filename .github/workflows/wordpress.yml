@@ -72,11 +72,11 @@ jobs:
       - name: Determine Deployment Environment
         id: set_env
         run: |
-          if [[ "${{ github.event.inputs.environment }}" == "dev" ]]; then
+          if [[ "${{ job.environment.name }}" == "dev" ]]; then
             echo "environment=dev" >> $GITHUB_ENV
-          elif [[ "${{ github.event.inputs.environment }}" == "uat" ]]; then
+          elif [[ "${{ job.environment.name }}" == "uat" ]]; then
             echo "environment=prd" >> $GITHUB_ENV
-          elif [[ "${{ github.event.inputs.environment }}" == "prd" ]]; then
+          elif [[ "${{ job.environment.name }}" == "prd" ]]; then
             echo "environment=uat" >> $GITHUB_ENV
           fi
 
